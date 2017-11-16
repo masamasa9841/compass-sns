@@ -25,7 +25,7 @@
  * GNU General Public License for more details.
  */
 
-require __DIR__ . '/class-twittersettingspage.php';
+require 'class-twittersettingspage.php';
 
 if ( is_admin() ) {
 	$sns_settings_page = new TwitterSettingsPage();
