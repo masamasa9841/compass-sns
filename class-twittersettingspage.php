@@ -56,7 +56,7 @@ class TwitterSettingsPage {
 			echo '<form method="post" action="options.php">';
 				settings_fields( 'cp_sns_setting' );
 				do_settings_sections( 'cp_sns_setting' );
-				submit_button();
+				submit_button( 'Twitter連携' );
 			echo '</form>';
 		echo '</div>';
 	}
