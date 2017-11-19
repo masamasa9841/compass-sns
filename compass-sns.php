@@ -26,7 +26,44 @@
  */
 
 require __DIR__ . '/class-twittersettingspage.php';
+require __DIR__ . '/twitter_api.php';
+require __DIR__ . '/editor-option.php';
 
 if ( is_admin() ) {
 	$sns_settings_page = new TwitterSettingsPage();
+}
+
+add_action( 'transition_post_status', 'hook_transition_post_status', 10, 3 );
+function hook_transition_post_status( $new_status, $old_status, $post ) {
+	$options = get_option( 'cp_sns_setting' );
+	$ck      = esc_attr( $options['consumer_key'] );
+	$cs      = esc_attr( $options['consumer_secret'] );
+	$at      = esc_attr( $options['access_token'] );
+	$atc     = esc_attr( $options['access_token_secret'] );
+	if ( ( 'auto-draft' === $old_status
+		|| 'draft' === $old_status
+		|| 'pending' === $old_status
+		|| 'future' === $old_status )
+		&& 'publish' === $new_status && 'post' === $post->post_type ) {
+		$twitter = new TwitterApi( $ck, $cs, $at, $atc );
+		if ( has_post_thumbnail( $post->ID ) ) {
+			$image_url = _get_post_thumbnail_url( $post->ID, 'large' );
+			$json      = $twitter->post_media( $image_url );
+			$media_id  = $twitter->get_media_id( $json );
+		} else {
+			$media_id = null;
+		}
+		$status = get_the_author_meta( 'display_name', $post->post_author ) . 'さんの記事が公開されました!!{{BR}}{{TITLE}}{{BR}}{{URL}}{{BR}}';
+		//ハッシュタグを設定
+		$posttags = wp_get_post_tags( $post->ID );
+		if ( $posttags ) {
+			foreach( $posttags as $tag ) {
+				$status = $status . " #" . $tag->name;
+			}
+		}
+		$status = str_replace( '{{TITLE}}', $post->post_title, $status );
+		$status = str_replace( '{{URL}}', get_permalink( $post->ID ), $status );
+		$status = str_replace( '{{BR}}', "\n", $status );
+		$twitter->tweet( $status, $media_id );
+	}
 }
