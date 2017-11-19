@@ -33,7 +33,9 @@ if ( is_admin() ) {
 	$sns_settings_page = new TwitterSettingsPage();
 }
 
-add_action( 'transition_post_status', 'hook_transition_post_status', 10, 3 );
+/**
+ * Post twitter.
+ */
 function hook_transition_post_status( $new_status, $old_status, $post ) {
 	$options = get_option( 'cp_sns_setting' );
 	$ck      = esc_attr( $options['consumer_key'] );
@@ -53,13 +55,10 @@ function hook_transition_post_status( $new_status, $old_status, $post ) {
 		} else {
 			$media_id = null;
 		}
-		$status = get_the_author_meta( 'display_name', $post->post_author ) . 'さんの記事が公開されました!!{{BR}}{{TITLE}}{{BR}}{{URL}}{{BR}}';
-		//ハッシュタグを設定
-		$posttags = wp_get_post_tags( $post->ID );
-		if ( $posttags ) {
-			foreach( $posttags as $tag ) {
-				$status = $status . " #" . $tag->name;
-			}
+		$status  = get_the_author_meta( 'display_name', $post->post_author ) . 'さんの記事が公開されました!!{{BR}}{{TITLE}}{{BR}}{{URL}}{{BR}}';
+		$hashtag = get_hashtag_singular_page();
+		if ( ! empty( $hashtag ) ) {
+			$status .= $hashtag[0];
 		}
 		$status = str_replace( '{{TITLE}}', $post->post_title, $status );
 		$status = str_replace( '{{URL}}', get_permalink( $post->ID ), $status );
@@ -67,3 +66,4 @@ function hook_transition_post_status( $new_status, $old_status, $post ) {
 		$twitter->tweet( $status, $media_id );
 	}
 }
+add_action( 'transition_post_status', 'hook_transition_post_status', 10, 3 );
