@@ -35,6 +35,10 @@ if ( is_admin() ) {
 
 /**
  * Post twitter.
+ *
+ * @param string $new_status New status.
+ * @param string $old_status Old status.
+ * @param object $post post.
  */
 function hook_transition_post_status( $new_status, $old_status, $post ) {
 	$options = get_option( 'cp_sns_setting' );
@@ -49,7 +53,7 @@ function hook_transition_post_status( $new_status, $old_status, $post ) {
 		&& 'publish' === $new_status && 'post' === $post->post_type ) {
 		$twitter = new TwitterApi( $ck, $cs, $at, $atc );
 		if ( has_post_thumbnail( $post->ID ) ) {
-			$image_url = _get_post_thumbnail_url( $post->ID, 'large' );
+			$image_url = get_post_thumbnail_url( $post->ID, 'large' );
 			$json      = $twitter->post_media( $image_url );
 			$media_id  = $twitter->get_media_id( $json );
 		} else {
@@ -58,7 +62,7 @@ function hook_transition_post_status( $new_status, $old_status, $post ) {
 		$status  = get_the_author_meta( 'display_name', $post->post_author ) . 'さんの記事が公開されました!!{{BR}}{{TITLE}}{{BR}}{{URL}}{{BR}}';
 		$hashtag = get_hashtag_singular_page();
 		if ( ! empty( $hashtag ) ) {
-			$status .= $hashtag[0];
+			$status .= $hashtag;
 		}
 		$status = str_replace( '{{TITLE}}', $post->post_title, $status );
 		$status = str_replace( '{{URL}}', get_permalink( $post->ID ), $status );
