@@ -59,8 +59,8 @@ class TwitterApi {
 		$params    = $this->_create_signature( TwitterApi::MEDIA_UPLOAD_URL, array() );
 		$options   = array(
 			'http' => array(
-				'method' => 'POST',
-				'header' => array(
+				'method'  => 'POST',
+				'header'  => array(
 					'Authorization: OAuth ' . http_build_query( $params, '', ',' ),
 					'Content-Type: multipart/form-data; boundary=' . $boundary,
 				),
@@ -86,13 +86,13 @@ class TwitterApi {
 		if ( null !== $media_id ) {
 			$post_params['media_ids'] = $media_id;
 		}
-		$params = $this->_create_signature( TwitterApi::TWEET_URL, $post_params );
-		// 送信データの作成.
+		$params  = $this->_create_signature( TwitterApi::TWEET_URL, $post_params );
 		$options = array(
 			'http' => array(
 				'method'  => 'POST',
 				'header'  => array(
 					'Authorization: OAuth ' . http_build_query( $params, '', ',' ),
+					'Content-Type: application/x-www-form-urlencoded',
 				),
 				'content' => http_build_query( $post_params ),
 			),
