@@ -26,7 +26,7 @@
  */
 
 require __DIR__ . '/class-twittersettingspage.php';
-require __DIR__ . '/twitter_api.php';
+require __DIR__ . '/class-twitterapi.php';
 require __DIR__ . '/editor-option.php';
 
 if ( is_admin() ) {

@@ -15,7 +15,7 @@ class TwitterSettingsPage {
 	/**
 	 * Holds the values to be used in the fields callbacks.
 	 *
-	 * @var object Option.
+	 * @var object $options Option.
 	 */
 	private $options;
 

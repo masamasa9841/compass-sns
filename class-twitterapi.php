@@ -1,14 +1,51 @@
 <?php
+/**
+ * Twitter api
+ * Thanks to https://qiita.com/hituziando/items/4421ee31a5b74a4ad0a0.
+ *
+ * @package compass-sns
+ * @author Masaya Okawa
+ * @license GPL-2.0+
+ */
+
+/**
+ * Setting Twitter api.
+ */
 class TwitterApi {
 	const TWEET_URL        = 'https://api.twitter.com/1.1/statuses/update.json';
 	const MEDIA_UPLOAD_URL = 'https://upload.twitter.com/1.1/media/upload.json';
+	/**
+	 * Consumer key.
+	 *
+	 * @var string.
+	 */
 	private $_consumer_key;
+	/**
+	 * Consumer secret.
+	 *
+	 * @var string.
+	 */
 	private $_consumer_secret;
+	/**
+	 * Access token.
+	 *
+	 * @var string.
+	 */
 	private $_access_token;
+	/**
+	 * Access token secret.
+	 *
+	 * @var string.
+	 */
 	private $_access_token_secret;
 
 	/**
 	 * Constructer.
+	 *
+	 * @param string $consumer_key Consumer Key.
+	 * @param string $consumer_secret Consumer Secret.
+	 * @param string $access_token Access token.
+	 * @param string $access_token_secret Access token secret.
 	 */
 	public function __construct( $consumer_key, $consumer_secret, $access_token, $access_token_secret ) {
 		$this->_consumer_key        = $consumer_key;
@@ -17,7 +54,13 @@ class TwitterApi {
 		$this->_access_token_secret = $access_token_secret;
 	}
 
-	private function _create_signature( $url, $params ) {
+	/**
+	 * Make Outh.
+	 *
+	 * @param string $url url.
+	 * @param array  $params params.
+	 */
+	private function create_signature( $url, $params ) {
 		$signature_key = rawurlencode( $this->_consumer_secret ) . '&' . rawurlencode( $this->_access_token_secret );
 		$oauth_params  = array(
 			'oauth_token'            => $this->_access_token,
@@ -27,7 +70,7 @@ class TwitterApi {
 			'oauth_nonce'            => md5( uniqid( rand(), true ) ),
 			'oauth_version'          => '1.0',
 		);
-		$merge_params  = array_merge( $params, $oauth_params );
+		$merge_params = array_merge( $params, $oauth_params );
 		ksort( $merge_params );
 		$req_params                      = http_build_query( $merge_params );
 		$req_params                      = str_replace( array( '+', '%7E' ), array( '%20', '~' ), $req_params );
@@ -42,9 +85,9 @@ class TwitterApi {
 	}
 
 	/**
-	 * 画像をアップロードします.
+	 * Upload image.
 	 *
-	 * @param $img_url
+	 * @param string $img_url image url.
 	 * @return string
 	 */
 	public function post_media( $img_url ) {
@@ -56,7 +99,7 @@ class TwitterApi {
 		$req_body .= "\r\n";
 		$req_body .= "\r\n" . $img_bin . "\r\n";
 		$req_body .= '--' . $boundary . '--' . "\r\n\r\n";
-		$params    = $this->_create_signature( TwitterApi::MEDIA_UPLOAD_URL, array() );
+		$params    = $this->create_signature( TwitterApi::MEDIA_UPLOAD_URL, array() );
 		$options   = array(
 			'http' => array(
 				'method'  => 'POST',
@@ -73,10 +116,10 @@ class TwitterApi {
 	}
 
 	/**
-	 * ツイートを投稿します。$media_idを指定すると画像付きで投稿します
+	 * Push tweet
 	 *
-	 * @param string $status ツイート本文.
-	 * @param $media_id
+	 * @param string $status tweet sentence.
+	 * @param string $media_id media id.
 	 * @return string
 	 */
 	public function tweet( $status, $media_id = null ) {
@@ -103,12 +146,16 @@ class TwitterApi {
 	}
 
 	/**
-	 * メディアアップロードのレスポンスからmedia_idを取得します.
+	 * Get media id.
 	 *
-	 * @param $media_response
-	 * @return string */
+	 * @param string $media_response media response.
+	 * @return string
+	 */
 	public function get_media_id( $media_response ) {
 		$res = json_decode( $media_response, true );
 		if ( isset( $res['media_id_string'] ) ) {
 			return $res['media_id_string'];
-		} return null; } }
+		}
+		return null;
+	}
+}

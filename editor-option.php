@@ -2,7 +2,9 @@
 /**
  * The template for editor_option.
  *
- * @package simplicity2-child
+ * @package compass-sns
+ * @author Masaya Okawa
+ * @license GPL-2.0+
  */
 
 /**
