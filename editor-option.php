@@ -49,5 +49,6 @@ add_action( 'save_post', 'save_hashtag_custom_data' );
  */
 function get_hashtag_singular_page() {
 	$hashtag = get_post_meta( get_the_ID(), 'hashtag', true );
+	$hashtag = str_replace( '＃', '#', $hashtag );
 	return $hashtag;
 }
