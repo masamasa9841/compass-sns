@@ -53,7 +53,7 @@ function hook_transition_post_status( $new_status, $old_status, $post ) {
 		&& 'publish' === $new_status && 'post' === $post->post_type ) {
 		$twitter = new TwitterApi( $ck, $cs, $at, $atc );
 		if ( has_post_thumbnail( $post->ID ) ) {
-			$image_url = get_post_thumbnail_url( $post->ID, 'large' );
+			$image_url = get_the_post_thumbnail_url( $post->ID, 'large' );
 			$json      = $twitter->post_media( $image_url );
 			$media_id  = $twitter->get_media_id( $json );
 		} else {
