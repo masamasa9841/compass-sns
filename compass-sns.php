@@ -62,7 +62,11 @@ add_action( 'transition_post_status', 'hook_transition_post_status', 10, 3 );
  * Post tweet everyday.
  */
 function cron_twitter() {
-	$posts = vip_get_random_posts();
+	$posts = get_posts(array(
+		'posts_per_page' => 1,
+		'orderby'        => 'rand',
+		'post_type'      => 'post',
+	));
 	$text  = '今までの記事です♪読んだ?{{BR}}{{TITLE}}{{BR}}{{URL}}{{BR}}';
 	foreach ( $posts as $post ) {
 		post_twitter( $text, $post );
