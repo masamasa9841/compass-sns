@@ -60,7 +60,7 @@ class TwitterApi {
 	 * @param string $url url.
 	 * @param array  $params params.
 	 */
-	private function create_signature( $url, $params ) {
+	private function _create_signature( $url, $params ) {
 		$signature_key = rawurlencode( $this->_consumer_secret ) . '&' . rawurlencode( $this->_access_token_secret );
 		$oauth_params  = array(
 			'oauth_token'            => $this->_access_token,
@@ -99,7 +99,7 @@ class TwitterApi {
 		$req_body .= "\r\n";
 		$req_body .= "\r\n" . $img_bin . "\r\n";
 		$req_body .= '--' . $boundary . '--' . "\r\n\r\n";
-		$params    = $this->create_signature( TwitterApi::MEDIA_UPLOAD_URL, array() );
+		$params    = $this->_create_signature( TwitterApi::MEDIA_UPLOAD_URL, array() );
 		$options   = array(
 			'http' => array(
 				'method'  => 'POST',
