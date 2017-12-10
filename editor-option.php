@@ -10,12 +10,12 @@
 /**
  * Box init.
  */
-function add_my_box_init() {
+function add_compass_box_init() {
 	add_meta_box( 'hashtag', 'Twitterハッシュタグ', 'add_my_box_hashtag', 'post', 'side' );
 	add_meta_box( 'hashtag', 'Twitterハッシュタグ', 'add_my_box_hashtag', 'page', 'side' );
 	add_meta_box( 'hashtag', 'Twitterハッシュタグ', 'add_my_box_hashtag', 'topic', 'side' );
 }
-add_action( 'add_meta_boxes', 'add_my_box_init' );
+add_action( 'add_meta_boxes', 'add_compass_box_init' );
 
 /**
  * Box html.
