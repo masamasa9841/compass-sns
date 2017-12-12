@@ -95,7 +95,7 @@ function post_twitter( $text, $post ) {
 		$media_id = null;
 	}
 	$status  = $text;
-	$hashtag = get_hashtag_singular_page();
+	$hashtag = get_hashtag_singular_page( $post->ID );
 	if ( ! empty( $hashtag ) ) {
 		$status .= $hashtag;
 	}

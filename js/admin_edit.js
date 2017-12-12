@@ -2,7 +2,6 @@
   var $wp_inline_edit = inlineEditPost.edit;
   inlineEditPost.edit = function( id ) {
       $wp_inline_edit.apply( this, arguments );
-
       var $post_id = 0;
       if ( typeof( id ) == 'object' )
           $post_id = parseInt( this.getId( id ) );
@@ -13,8 +12,6 @@
 
           var $hashtag = $( '.column-hashtag', $post_row ).html();
           $( ':input[name="hashtag"]', $edit_row ).val( $hashtag );
-
       }
   };
-
 })(jQuery);
