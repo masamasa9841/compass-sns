@@ -7,6 +7,9 @@
  * @license GPL-2.0+
  */
 
+require __DIR__ . '/class-twitterapi.php';
+require __DIR__ . '/editor-option.php';
+require __DIR__ . '/functions.php';
 /**
  * Setting page.
  */
@@ -52,11 +55,19 @@ class TwitterSettingsPage {
 	public function create_admin_page() {
 		$this->options = get_option( 'cp_sns_setting' );
 		echo '<div class="wrap">';
-			echo '<h2>コンパスsns設定</h2>';
+			echo '<h2>Compass Twitter</h2>';
+			?>
+			<h2 class="nav-tab-wrapper">
+			<a href="<?php echo esc_url( admin_url( 'admin.php?page=cp_sns_setting' ) ); ?>" class="nav-tab<?php if ( ! isset( $_GET['action'] ) || isset( $_GET['action'] ) && 'social' != $_GET['action']  && 'footer' != $_GET['action'] ) echo ' nav-tab-active'; ?>"><?php esc_html_e( 'General' ); ?></a>
+			<a href="<?php echo esc_url( add_query_arg( array( 'action' => 'social' ), admin_url( 'admin.php?page=cp_sns_setting' ) ) ); ?>" class="nav-tab<?php if ( $social_Screen ) echo ' nav-tab-active'; ?>"><?php esc_html_e( 'Social' ); ?></a>
+			<a href="<?php echo esc_url( add_query_arg( array( 'action' => 'footer' ), admin_url( 'admin.php?page=cp_sns_setting' ) ) ); ?>" class="nav-tab<?php if ( $footer_Screen ) echo ' nav-tab-active'; ?>"><?php esc_html_e( 'Footer' ); ?></a>
+		</h2>
+		<?php
 			echo '<form method="post" action="options.php">';
 				settings_fields( 'cp_sns_setting' );
 				do_settings_sections( 'cp_sns_setting' );
-				submit_button( 'Twitter連携' );
+				submit_button( 'connection' );
+				echo getaccount();
 			echo '</form>';
 		echo '</div>';
 	}
