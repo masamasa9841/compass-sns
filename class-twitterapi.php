@@ -60,7 +60,7 @@ class TwitterApi {
 	 * @param string $url url.
 	 * @param array  $params params.
 	 */
-	private function _create_signature( $url, $params ) {
+	private function create_signature( $url, $params ) {
 		$signature_key = rawurlencode( $this->_consumer_secret ) . '&' . rawurlencode( $this->_access_token_secret );
 		$oauth_params  = array(
 			'oauth_token'            => $this->_access_token,
@@ -70,7 +70,7 @@ class TwitterApi {
 			'oauth_nonce'            => md5( uniqid( rand(), true ) ),
 			'oauth_version'          => '1.0',
 		);
-		$merge_params = array_merge( $params, $oauth_params );
+		$merge_params  = array_merge( $params, $oauth_params );
 		ksort( $merge_params );
 		$req_params                      = http_build_query( $merge_params );
 		$req_params                      = str_replace( array( '+', '%7E' ), array( '%20', '~' ), $req_params );
@@ -99,7 +99,7 @@ class TwitterApi {
 		$req_body .= "\r\n";
 		$req_body .= "\r\n" . $img_bin . "\r\n";
 		$req_body .= '--' . $boundary . '--' . "\r\n\r\n";
-		$params    = $this->_create_signature( TwitterApi::MEDIA_UPLOAD_URL, array() );
+		$params    = $this->create_signature( TwitterApi::MEDIA_UPLOAD_URL, array() );
 		$options   = array(
 			'http' => array(
 				'method'  => 'POST',
@@ -129,7 +129,7 @@ class TwitterApi {
 		if ( null !== $media_id ) {
 			$post_params['media_ids'] = $media_id;
 		}
-		$params  = $this->_create_signature( TwitterApi::TWEET_URL, $post_params );
+		$params  = $this->create_signature( TwitterApi::TWEET_URL, $post_params );
 		$options = array(
 			'http' => array(
 				'method'  => 'POST',
