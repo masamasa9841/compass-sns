@@ -73,19 +73,6 @@ class TwitterSettingsPage {
 		add_settings_field( 'access_token', 'Access Token', array( $this, 'access_token' ), 'cp_sns_setting', 'cp_sns_twitter' );
 		add_settings_field( 'access_token_secret', 'Access Token Secret', array( $this, 'access_token_secret' ), 'cp_sns_setting', 'cp_sns_twitter' );
 
-		register_setting(
-			'vaajo_social', // Option group.
-			'vaajo_social', // Option name.
-			array( $this, 'sanitize' ) // Sanitize.
-		);
-		add_settings_section(
-			'setting_section_id', // ID.
-			'Social Settings', // Title.
-			'',
-			'vaajo-setting-social' // Page.
-		);
-
-		add_settings_field( 'fb_url', 'Facebook URL', array( $this, 'fb_url_callback' ), 'vaajo-setting-social', 'setting_section_id' );
 	}
 
 	/**
@@ -95,35 +82,37 @@ class TwitterSettingsPage {
 		$this->options_general = get_option( 'cp_sns_setting' );
 		$this->options_social  = get_option( 'vaajo_social' );
 		$this->options_footer  = get_option( 'vaajo_footer' );
+		$general_screen        = ( filter_input( INPUT_GET, 'action' ) === 'general' ) ? true : false;
 		$social_screen         = ( filter_input( INPUT_GET, 'action' ) === 'social' ) ? true : false;
 		$footer_screen         = ( filter_input( INPUT_GET, 'action' ) === 'footer' ) ? true : false;
-		echo '<div class="wrap">';
 			echo '<h2>Compass Twitter</h2>';
+			settings_errors();
 			?>
 			<h2 class="nav-tab-wrapper">
-			<a href="<?php echo esc_url( admin_url( 'admin.php?page=cp_sns_setting' ) ); ?>" class="nav-tab
-			<?php
-			if ( filter_input( INPUT_GET, 'action' ) ) {
-				echo ' nav-tab-active';
-			}
-			?>
-			"> <?php esc_html_e( 'General' ); ?></a>
-			<a href="<?php echo esc_url( add_query_arg( array( 'action' => 'social' ), admin_url( 'admin.php?page=cp_sns_setting' ) ) ); ?>" class="nav-tab
-			<?php
-			if ( $social_screen ) {
-				echo ' nav-tab-active';
-			}
-			?>
-			"><?php esc_html_e( 'Social' ); ?></a>
-			<a href="<?php echo esc_url( add_query_arg( array( 'action' => 'footer' ), admin_url( 'admin.php?page=cp_sns_setting' ) ) ); ?>" class="nav-tab
-			<?php
-			if ( $footer_screen ) {
-				echo ' nav-tab-active';
-			}
-			?>
-			"><?php esc_html_e( 'Footer' ); ?></a>
-		</h2>
+				<a href="<?php echo esc_url( add_query_arg( array( 'action' => 'general' ), admin_url( 'admin.php?page=cp_sns_setting' ) ) ); ?>" class="nav-tab
+				<?php
+				if ( $general_screen ) {
+					echo ' nav-tab-active';
+				}
+				?>
+				"> <?php esc_html_e( 'Connection' ); ?></a>
+				<a href="<?php echo esc_url( add_query_arg( array( 'action' => 'social' ), admin_url( 'admin.php?page=cp_sns_setting' ) ) ); ?>" class="nav-tab
+				<?php
+				if ( $social_screen ) {
+					echo ' nav-tab-active';
+				}
+				?>
+				"><?php esc_html_e( 'Basic setting' ); ?></a>
+				<a href="<?php echo esc_url( add_query_arg( array( 'action' => 'footer' ), admin_url( 'admin.php?page=cp_sns_setting' ) ) ); ?>" class="nav-tab
+				<?php
+				if ( $footer_screen ) {
+					echo ' nav-tab-active';
+				}
+				?>
+				"><?php esc_html_e( '今後の為にあるタブ' ); ?></a>
+			</h2>
 		<?php
+		echo '<div class="postbox">';
 		if ( $social_screen ) {
 			settings_fields( 'vaajo_social' );
 			do_settings_sections( 'vaajo-setting-social' );
@@ -137,10 +126,10 @@ class TwitterSettingsPage {
 				settings_fields( 'cp_sns_setting' );
 				do_settings_sections( 'cp_sns_setting' );
 				submit_button( 'connection' );
-				echo esc_attr( getaccount() );
+				echo wp_kses_post( get_account() );
 				echo '</form>';
-			echo '</div>';
 		}
+			echo '</div>';
 	}
 
 	/**
@@ -202,6 +191,13 @@ class TwitterSettingsPage {
 		if ( isset( $input['access_token_secret'] ) && trim( $input['access_token_secret'] ) !== '' ) {
 			$new_input['access_token_secret'] = sanitize_text_field( $input['access_token_secret'] );
 		}
+		add_settings_error(
+			'unique_identifyer',
+			'settings_updated',
+			'unko',
+			'error'
+		);
+
 		return $new_input;
 	}
 }

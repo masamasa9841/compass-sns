@@ -236,7 +236,8 @@ class TwitterApi {
 		$obj  = json_decode( $json );
 		$html = '';
 		if ( property_exists( $obj, 'errors' ) ) {
-			$html = '<h2>Connection Error</h2>';
+			$html  = '<h2>Connection Error</h2>';
+			$html .= '<p>設定を確認してください。</p>';
 			return $html;
 		}
 

@@ -79,7 +79,7 @@ function _get_post_thumbnail_url( $post_id, $size ) {
 	return $image_url;
 }
 
-function getaccount() {
+function get_account() {
 	$options = get_option( 'cp_sns_setting' );
 	$ck      = esc_attr( $options['consumer_key'] );
 	$cs      = esc_attr( $options['consumer_secret'] );
@@ -87,5 +87,4 @@ function getaccount() {
 	$atc     = esc_attr( $options['access_token_secret'] );
 	$twitter = new TwitterApi( $ck, $cs, $at, $atc );
 	return $twitter->get_account();
-
 }
