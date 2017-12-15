@@ -1,6 +1,6 @@
 <?php
 /**
- * Transition post status tweet..
+ * Transition post status tweet.
  *
  * @param string $new_status New status.
  * @param string $old_status Old status.
